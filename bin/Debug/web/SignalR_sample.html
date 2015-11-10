@@ -1,0 +1,30 @@
+﻿<input type="text" id="name" />
+<input type="text" id="message" />
+<input type="button" value="send" onclick="send()" />
+
+<ul id="messagebox"></ul>
+
+<script src="/Scripts/jquery-1.6.4.min.js"></script>
+<script src="/Scripts/jquery.signalR-2.2.0.min.js"></script>
+<script src="/signalr/hubs"></script>
+
+<script>
+    $(document).ready(function () {
+        $.connection.hub.url = "/signalr";
+        var chat = $.connection.myHub;
+
+        chat.client.addMessage = function (name, message) {
+            $("#messagebox").append($("<li>" + name + ":" + message + "</li>"));
+        };
+
+        $.connection.hub.start();
+    });
+
+    function send() {
+        var name = $("#name").val();
+        var message = $("#message").val();
+        $.connection.myHub.server.send(name, message);
+        $("#name").val("");
+        $("#message").val("");
+    }
+</script>
